@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import items from "../data/items";
 import RatingWidget from "../components/RatingWidget"; 
 import PurchaseButton from "../components/PurchaseButton"; 
 
 function Home({ searchQuery = "" }) {
+  const [items, setItems] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [maxPrice, setMaxPrice] = useState(100);
 
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/products")
+      .then((res) => res.json())
+      .then((data) => setItems(data));
+  }, []);
+
   const categories = ["All", ...new Set(items.map(item => item.category))];
-  const highestPrice = Math.max(...items.map(item => item.price), 100);
+  const highestPrice = items.length > 0 ? Math.max(...items.map(item => item.price)) : 100;
 
   const filteredItems = items.filter((item) => {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
