@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
-from .database import engine, get_db, Base
-from .models import ProductModel, CartItemModel, OrderModel
+from database import engine, get_db, Base
+from models import ProductModel, CartItemModel, OrderModel
 from pydantic import BaseModel
 from typing import List, Optional
 
@@ -26,7 +27,10 @@ class ProductBase(BaseModel):
 
 class Product(ProductBase):
     id: int
-
+class Order(BaseModel):
+    id: int
+    total_price: float
+    status: str
 class Category(BaseModel):
     name: str
 
